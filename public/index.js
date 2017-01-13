@@ -165,7 +165,156 @@ var rentalModifications = [{
   'pickupDate': '2015-12-05'
 }];
 
+
 console.log(cars);
 console.log(rentals);
 console.log(actors);
 console.log(rentalModifications);
+
+
+//exercise1
+var i = 0;
+for(i=0;i<cars.length;i++)
+{
+    console.log(cars[i].id);
+}
+
+function DateDiff(d1,d2){
+    var date1 = new Date(d1);
+    var date2 = new Date(d2);
+    var WNbJours = date2.getTime() - date1.getTime();
+    return Math.ceil(WNbJours/(1000*60*60*24))+1;
+}
+
+function UpdatePrice()
+{
+    var i = 0;
+    var k = 0;
+    var priceDay = 0;
+    var priceKm = 0;
+    var nbJours = 0;
+    for(i=0;i<rentals.length;i++)
+    {
+        for(k=0;k<cars.length;k++)
+        {
+            if(rentals[i].carId == cars[k].id)
+            {
+                priceDay = cars[k].pricePerDay;
+                priceKm = cars[k].pricePerKm;
+            }
+        }
+
+        nbJours = DateDiff(rentals[i].pickupDate,rentals[i].returnDate);
+
+        rentals[i].price = nbJours*priceDay + priceKm*rentals[i].distance;
+
+
+    }
+}
+
+
+function printPrice()
+{
+    var i = 0;
+    for(i=0;i<rentals.length;i++)
+    {
+        console.log(rentals[i].price);
+    }
+}
+
+function printDate()
+{
+    var i = 0;
+    for(i=0;i<rentals.length;i++)
+    {
+        console.log(DateDiff(rentals[i].pickupDate,rentals[i].returnDate));
+    }
+}
+
+
+
+//exercice2
+
+function UpdateNewPrice()
+{
+    var i = 0;
+    var k = 0;
+    var priceDay = 0;
+    var priceKm = 0;
+    var nbJours = 0;
+    for(i=0;i<rentals.length;i++)
+    {
+        for(k=0;k<cars.length;k++)
+        {
+            if(rentals[i].carId == cars[k].id)
+            {
+                priceDay = cars[k].pricePerDay;
+                priceKm = cars[k].pricePerKm;
+            }
+        }
+
+        nbJours = DateDiff(rentals[i].pickupDate,rentals[i].returnDate);
+
+        if(nbJours != 1)
+        {
+            if(nbJours<5)
+            {
+                rentals[i].price = nbJours*priceDay*0.9 + priceKm*rentals[i].distance;
+            }
+            if(4<nbJours<11)
+            {
+
+                rentals[i].price = nbJours*priceDay*0.7 + priceKm*rentals[i].distance;
+            }
+            if(10<nbJours)
+            {
+                rentals[i].price = nbJours*priceDay*0.5 + priceKm*rentals[i].distance;
+            }
+        }
+        else
+        {
+            rentals[i].price = nbJours*priceDay + priceKm*rentals[i].distance;
+        }
+
+    }
+
+}
+
+//exercise 3
+function UpdateCommission()
+{
+    var i = 0;
+    var commission = 0;
+    for(i=0;i<rentals.length;i++)
+    {
+        commission = rentals[i].price*0.3;
+        rentals[i].commission.insurance = commission*0.5;
+        rentals[i].commission.assistance = DateDiff(rentals[i].pickupDate,rentals[i].returnDate);
+        rentals[i].commission.drivy = commission - rentals[i].commission.insurance - rentals[i].commission.assistance;
+    }
+}
+
+function UpdateOption()
+{
+    var i = 0;
+    var suppPrice = 0;
+    for(i=0;i<rentals.length;i++)
+    {
+        if(rentals[i].options.deductibleReduction == true)
+        {
+            suppPrice = 4*DateDiff(rentals[i].pickupDate,rentals[i].returnDate);
+            rentals[i].price += suppPrice;
+            rentals[i].commission.drivy += suppPrice;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
